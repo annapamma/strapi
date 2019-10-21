@@ -1,8 +1,7 @@
-# test new UI
+# version 2.0
 version: 2.0    
 
 # Define the jobs
-#
 jobs:
     build:
         working_directory: ~/app
