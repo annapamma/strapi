@@ -1,14 +1,5 @@
 # test new UI
-version: 2.1    
-
-# end to end testing template
-e2e_tests: &e2e_tests
-    - run:
-        name: 'Run E2E Tests'
-        command: |
-            yarn run -s test:generate-app -- ${DB_STRING}
-            yarn run -s test:start-app & ./node_modules/.bin/wait-on http://localhost:1337
-            yarn run -s test:e2e
+version: 2.0    
 
 # Define the jobs
 jobs:
@@ -55,15 +46,11 @@ jobs:
             - attach_workspace:
                 at: ~/
             - run:
-                name: test
-                command: yarn run -s test:snyk
-            - run:
                 name: 'Lint / Unit Tests'
                 command: |
                   yarn run -s lint
                   yarn run -s test:unit
                   yarn run -s test:front
-
     e2e_tests_postgres:
         working_directory: ~/app
         environment:
@@ -80,7 +67,12 @@ jobs:
                     sudo apt-get install postgresql-client
             - run:                
                 command: psql -c 'create database strapi_test;' -U postgres -h localhost -p 5432
-            - <<: *e2e_tests            
+            - run:
+                name: 'Run E2E Tests'
+                command: |
+                    yarn run -s test:generate-app -- ${DB_STRING}
+                    yarn run -s test:start-app & ./node_modules/.bin/wait-on http://localhost:1337
+                    yarn run -s test:e2e           
 
     e2e_tests_mysql:
         working_directory: ~/app        
@@ -112,7 +104,12 @@ jobs:
             - run:
                 name: Installing Dependencies
                 command: sudo apt install mysql-client
-            - <<: *e2e_tests
+            - run:
+                name: 'Run E2E Tests'
+                command: |
+                    yarn run -s test:generate-app -- ${DB_STRING}
+                    yarn run -s test:start-app & ./node_modules/.bin/wait-on http://localhost:1337
+                    yarn run -s test:e2e
 
     e2e_tests_sqllite:
         working_directory: ~/app
@@ -123,7 +120,12 @@ jobs:
         steps:        
             - attach_workspace:
                 at: ~/
-            - <<: *e2e_tests
+            - run:
+                name: 'Run E2E Tests'
+                command: |
+                    yarn run -s test:generate-app -- ${DB_STRING}
+                    yarn run -s test:start-app & ./node_modules/.bin/wait-on http://localhost:1337
+                    yarn run -s test:e2e
 
     e2e_tests_mongo:
         working_directory: ~/app
@@ -135,7 +137,12 @@ jobs:
         steps:        
             - attach_workspace:
                 at: ~/
-            - <<: *e2e_tests
+            - run:
+                name: 'Run E2E Tests'
+                command: |
+                    yarn run -s test:generate-app -- ${DB_STRING}
+                    yarn run -s test:start-app & ./node_modules/.bin/wait-on http://localhost:1337
+                    yarn run -s test:e2e
 
 workflows:
   version: 2
